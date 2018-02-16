@@ -1,4 +1,4 @@
-package com.bruuser.appuser.entity;
+package com.bruuser.business.appuser.entity;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;

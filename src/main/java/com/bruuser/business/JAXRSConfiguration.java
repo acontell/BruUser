@@ -1,4 +1,4 @@
-package com.bruuser;
+package com.bruuser.business;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

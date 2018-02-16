@@ -1,6 +1,6 @@
-package com.bruuser.appuser.boundary;
+package com.bruuser.business.appuser.boundary;
 
-import com.bruuser.appuser.entity.AppUser;
+import com.bruuser.business.appuser.entity.AppUser;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.TypedQuery;

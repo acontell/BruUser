@@ -1,4 +1,4 @@
-package com.bruuser.appuser.entity;
+package com.bruuser.business.appuser.entity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,6 +11,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,6 +27,9 @@ public class AppUser implements Serializable {
 
     private static final String PREFIX = "appuser.entity.AppUser.";
     public static final String FIND_ALL = PREFIX + "findAll";
+
+    @Version
+    private long version;
 
     @NotNull
     @Size(max = 200)
