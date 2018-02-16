@@ -1,2 +1,2 @@
-FROM airhacks/glassfish
+FROM airhacks/wildfly
 COPY ./target/bruuser.war ${DEPLOYMENT_DIR}
