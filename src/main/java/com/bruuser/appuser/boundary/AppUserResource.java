@@ -2,6 +2,7 @@ package com.bruuser.appuser.boundary;
 
 import com.bruuser.appuser.entity.AppUser;
 import java.net.URI;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -21,34 +22,39 @@ import javax.ws.rs.core.UriInfo;
 @Produces(MediaType.APPLICATION_JSON)
 public class AppUserResource {
 
-    private static final String PATH_DELIMITER = "/";
+    static final String PATH_DELIMITER = "/";
 
     @Inject
     AppUserManager appUserManager;
 
     @GET
-    @Path("{id}")
-    public AppUser getById(@PathParam("id") long userId) {
-        return appUserManager.getById(userId);
+    @Path("{userName}")
+    public AppUser getByUserName(@PathParam("userName") String userName) {
+        return appUserManager.getByUserName(userName);
     }
 
+    @GET
+    @Path("{all}")
+    public List<AppUser> getAll() {
+        return appUserManager.getAll();
+    }
+    
     @POST
     public Response save(@NotNull AppUser user, @Context UriInfo uriInfo) {
         URI uri = getUriOfAppUser(uriInfo, appUserManager.save(user));
-        return Response
-                .created(uri)
+        return Response.created(uri)
                 .build();
     }
 
     private URI getUriOfAppUser(UriInfo info, AppUser appUser) {
         return info.getAbsolutePathBuilder()
-                .path(PATH_DELIMITER + appUser.getId())
+                .path(PATH_DELIMITER + appUser.getUserName())
                 .build();
     }
 
     @DELETE
-    @Path("{id}")
-    public void delete(@PathParam("id") long userId) {
-        appUserManager.delete(userId);
+    @Path("{userName}")
+    public void delete(@PathParam("userName") String userName) {
+        appUserManager.delete(userName);
     }
 }

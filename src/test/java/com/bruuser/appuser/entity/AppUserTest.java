@@ -5,9 +5,10 @@ import org.junit.Test;
 
 public class AppUserTest {
 
+    private static final String USER_NAME = "acontell";
+
     @Test
-    public void getIdShouldReturnId() {
-        // Useless test, just for coverage.
-        assertEquals(new AppUser().getId(), 0);
+    public void getUserNameShouldReturnUserName() {
+        assertEquals(new AppUser(USER_NAME).getUserName(), USER_NAME);
     }
 }

@@ -1,6 +1,7 @@
 package com.bruuser.appuser.boundary;
 
 import com.bruuser.appuser.entity.AppUser;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -12,19 +13,25 @@ public class AppUserManager {
     @PersistenceContext
     EntityManager em;
 
-    public AppUser getById(long userId) {
-        return this.em.find(AppUser.class, userId);
+    public AppUser getByUserName(String userName) {
+        return this.em.find(AppUser.class, userName);
     }
 
     public AppUser save(AppUser user) {
         return this.em.merge(user);
     }
 
-    public void delete(long userId) {
+    public void delete(String userName) {
         try {
-            this.em.remove(this.em.getReference(AppUser.class, userId));
+            this.em.remove(this.em.getReference(AppUser.class, userName));
         } catch (EntityNotFoundException ex) {
             // Trying to delete something that doesn't exist is ok for me.
         }
+    }
+
+    public List<AppUser> getAll() {
+        return this.em
+                .createNamedQuery(AppUser.FIND_ALL, AppUser.class)
+                .getResultList();
     }
 }
