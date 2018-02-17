@@ -1,0 +1,2 @@
+#!/bin/sh
+curl -H "Content-Type: text/xml; charset=utf-8" -H "SOAPAction:"  -d @request.xml -X POST http://localhost:8080/bruuser/UsersService

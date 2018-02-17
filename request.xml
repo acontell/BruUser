@@ -1,0 +1,9 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" 
+                  xmlns:api="http://webservices.business.bruuser.com/">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <api:sayHello>
+            <InitialName> ARCADIO, eres el MEJORRRR!!!!</InitialName>
+        </api:sayHello>
+    </soapenv:Body>
+</soapenv:Envelope>
