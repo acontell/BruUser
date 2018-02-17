@@ -21,6 +21,13 @@ public class StringValidationTest {
     private static final String CHARS_AND_UPPER_CASES = "1 A 3 F";
 
     @Test
+    public void shouldReturnFalseOnNullString() {
+        assertFalse(isNotEmptyCharsAndSpacesOnly(null));
+        assertFalse(isNotEmptyAlphaNumericOnly(null));
+        assertFalse(isNotEmptyAtLeastOneDigitAndUpperCase(null));
+    }
+    
+    @Test
     public void isNotEmptyCharsAndSpacesOnlyReturnsFalseIfEmpty() {
         assertFalse(isNotEmptyCharsAndSpacesOnly(EMPTY));
     }
