@@ -3,7 +3,7 @@ body {
 }
 
 .alert-info-medium {
-    width: 550px;
+    width: 650px;
 }
 
 .small-padding-left {
@@ -12,4 +12,8 @@ body {
 
 .quarter-width {
     width: 25%;
+}
+
+.hidden {
+    display: none;
 }

@@ -1,11 +1,10 @@
-(function (USER_FORM, $, undefined) {
+(function (USER_FORM, $, _, undefined) {
     var $el;
 
-    function setLoginFormState(isErrorVisible, isLoadingVisible, isSubmitDisabled) {
-        $el.find('.notifications').toggle(isErrorVisible || isLoadingVisible);
-        $el.find('.errors').toggle(isErrorVisible);
-        $el.find('.loading').toggle(isLoadingVisible);
-        $el.find('.submitBtn').prop('disabled', isSubmitDisabled);
+    function showNotifications(isErrorVisible, isSuccessVisible) {
+        console.log('aqui me tienes', isErrorVisible, isSuccessVisible);
+        $('#errors').toggle(isErrorVisible);
+        $('#success').toggle(isSuccessVisible);
     }
 
     function getSubmitData() {
@@ -18,24 +17,28 @@
 
     function dealWithSubmit(event) {
         event.preventDefault();
-        //setLoginFormState(false, true, true);
-        AJAX.updateUser(getSubmitData(), ajaxSuccessCbk);
+        AJAX.updateUser(getSubmitData(), ajaxSuccessCbk, ajaxErrCbk);
     }
 
     function ajaxSuccessCbk(obj) {
-        //setLoginFormState(!obj.isLoggedIn, false, false);
-        reset();
+        showNotifications(false, true);
         EVENTS.trigger('successUpdateUser', [obj]);
+    }
+
+    function ajaxErrCbk(err) {
+        if (_.isEqual(err.status, 400)) {
+            showNotifications(true, false);
+        }
     }
 
     function init() {
         $el = $('#userForm');
         $el.submit(dealWithSubmit);
+        $el.find('.reset').click(_.partial(showNotifications, false, false));
         return $el;
     }
 
     function reset() {
-        setLoginFormState(false, false, false);
         $el.find('.reset').click();
     }
 
@@ -49,6 +52,7 @@
 
     USER_FORM.init = function () {
         $el = $el || init();
+        reset();
     };
 
     USER_FORM.update = function (ev, user) {
@@ -56,4 +60,4 @@
         updateForm(user);
     };
 
-})(window.USER_FORM = window.USER_FORM || {}, jQuery);
+})(window.USER_FORM = window.USER_FORM || {}, jQuery, _);

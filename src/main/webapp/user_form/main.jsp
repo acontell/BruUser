@@ -19,4 +19,11 @@
         <button type="reset" class="btn btn-default reset" value="Reset">Reset</button>
         <button type="submit" class="btn btn-default">Create/update</button>
     </form>
+    <br>
+    <div class="alert alert-warning alert-info-medium" id="errors">
+        <strong>Warning!</strong> Some of the fields are not compliant with the specifications, check them!
+    </div>
+    <div class="alert alert-success alert-info-medium" id="success">
+        <strong>Success!</strong> User updated on the Data Base.
+    </div>
 </div>
