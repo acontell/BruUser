@@ -1,12 +1,12 @@
 <div class="quarter-width small-padding-left">
-    <form action="#">
+    <form action="#" id="userForm">
         <div class="form-group">
             <label for="userName">User name:</label>
             <input type="text" class="form-control" id="userName">
         </div>
         <div class="form-group">
             <label for="fullName">Full name:</label>
-            <input type="text" class="form-control" id="userName">
+            <input type="text" class="form-control" id="fullName">
         </div>
         <div class="form-group">
             <label for="password">Password:</label>
@@ -16,7 +16,7 @@
             <label for="lastUpdate">Last update:</label>
             <input type="text" class="form-control" id="lastUpdate" readonly>
         </div>
-        <button type="reset" class="btn btn-default" value="Reset">Reset</button>
+        <button type="reset" class="btn btn-default reset" value="Reset">Reset</button>
         <button type="submit" class="btn btn-default">Create/update</button>
     </form>
 </div>

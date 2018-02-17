@@ -17,11 +17,13 @@
         $el.find('.remove')[action]('click', removeHandler);
     }
 
-    function editHandler() {
+    function editHandler(ev) {
+        ev.preventDefault();
         EVENTS.trigger('updateUserRequest', findUserByUserName($(this).data('username')));
     }
 
-    function removeHandler() {
+    function removeHandler(ev) {
+        ev.preventDefault();
         AJAX.removeUser($(this).data('username'), EVENTS.triggerCurried('successRemoveUser'));
     }
 
@@ -43,13 +45,16 @@
         });
     }
 
+    USERS_LIST.init = function () {
+        $el = $el || init();
+        templateFnc = templateFnc || _.template($('#userRowTemplate').html());
+    };
+
     USERS_LIST.fetchUsers = function () {
         AJAX.loadListOfUsers(EVENTS.triggerCurried('successFetchUsers'));
     };
 
     USERS_LIST.paint = function (ev, users) {
-        $el = $el || init();
-        templateFnc = templateFnc || _.template($('#userRowTemplate').html());
         currentUsers = users;
         fillResultData(users);
     };

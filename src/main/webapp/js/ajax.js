@@ -7,4 +7,14 @@
             success: cbk
         });
     };
+    AJAX.updateUser = function (data, cbk) {
+        $.ajax({
+            url: 'resources/appuser',
+            type: 'PUT',
+            data: data,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success: cbk
+        });
+    };
 })(window.AJAX = window.AJAX || {}, jQuery, _);
