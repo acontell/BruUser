@@ -8,7 +8,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 
 @Stateless
-public class AppUserManager {
+public class AppUsersManager {
 
     @PersistenceContext
     EntityManager em;

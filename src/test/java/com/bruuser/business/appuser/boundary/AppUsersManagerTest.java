@@ -13,11 +13,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class AppUserManagerTest {
+public class AppUsersManagerTest {
 
     private static final String APP_USER_NAME = "acontell";
     private static final AppUser USER = new AppUser();
-    private AppUserManager cut;
+    private AppUsersManager cut;
     @Mock
     private EntityManager em;
     @Mock
@@ -26,7 +26,7 @@ public class AppUserManagerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        cut = new AppUserManager();
+        cut = new AppUsersManager();
         cut.em = em;
         when(em.find(AppUser.class, APP_USER_NAME)).thenReturn(USER);
         when(em.merge(USER)).thenReturn(USER);
