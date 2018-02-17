@@ -1,8 +1,8 @@
-package com.bruuser.business;
+package com.bruuser.business.mappers;
 
-import static com.bruuser.business.EJBExceptionMapper.NOT_KNOWN;
-import static com.bruuser.business.EJBExceptionMapper.OPTIMISTIC_LOCKING_EXCEPTION;
-import static com.bruuser.business.EJBExceptionMapper.VIOLATION_CONSTRAINT_EXCEPTION;
+import static com.bruuser.business.mappers.EJBExceptionMapper.NOT_KNOWN;
+import static com.bruuser.business.mappers.EJBExceptionMapper.OPTIMISTIC_LOCKING_EXCEPTION;
+import static com.bruuser.business.mappers.EJBExceptionMapper.VIOLATION_CONSTRAINT_EXCEPTION;
 import javax.ejb.EJBException;
 import javax.persistence.OptimisticLockException;
 import javax.validation.ConstraintViolationException;
@@ -42,7 +42,7 @@ public class EJBExceptionMapperTest {
         when(ex.getCause()).thenReturn(new OptimisticLockException());
         assertEquals(cut.toResponse(ex), OPTIMISTIC_LOCKING_EXCEPTION);
     }
-    
+
     @Test
     public void toResponseShouldReturnBadRequestResponseWhenCauseIsConstraintViolationException() {
         when(ex.getCause()).thenReturn(new ConstraintViolationException(null, null));

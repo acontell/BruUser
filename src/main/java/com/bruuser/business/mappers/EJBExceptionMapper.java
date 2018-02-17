@@ -1,4 +1,4 @@
-package com.bruuser.business;
+package com.bruuser.business.mappers;
 
 import java.util.Optional;
 import javax.ejb.EJBException;
