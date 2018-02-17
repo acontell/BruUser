@@ -1,5 +1,9 @@
 package com.bruuser.business.appuser.entity;
 
+import static com.bruuser.business.validation.StringValidation.isNotEmptyAlphaNumericOnly;
+import static com.bruuser.business.validation.StringValidation.isNotEmptyAtLeastOneDigitAndUpperCase;
+import static com.bruuser.business.validation.StringValidation.isNotEmptyCharsAndSpacesOnly;
+import com.bruuser.business.validation.ValidEntity;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -23,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Table(name = "APPUSER")
-public class AppUser implements Serializable {
+public class AppUser implements ValidEntity, Serializable {
 
     private static final String PREFIX = "appuser.entity.AppUser.";
     public static final String FIND_ALL = PREFIX + "findAll";
@@ -32,13 +36,13 @@ public class AppUser implements Serializable {
     private long version;
 
     @NotNull
-    @Size(max = 200)
+    @Size(min = 1, max = 200)
     @Column(name = "FULL_NAME")
     private String fullName;
 
     @NotNull
     @Id
-    @Size(max = 20)
+    @Size(min = 1, max = 20)
     @Column(name = "USER_NAME")
     private String userName;
 
@@ -62,10 +66,23 @@ public class AppUser implements Serializable {
     }
 
     public AppUser(String userName) {
+        this(userName, null, null);
+    }
+
+    public AppUser(String userName, String fullName, String password) {
         this.userName = userName;
+        this.fullName = fullName;
+        this.password = password;
     }
 
     public String getUserName() {
         return userName;
+    }
+
+    @Override
+    public boolean isValid() {
+        return isNotEmptyAlphaNumericOnly(userName)
+                && isNotEmptyCharsAndSpacesOnly(fullName)
+                && isNotEmptyAtLeastOneDigitAndUpperCase(password);
     }
 }

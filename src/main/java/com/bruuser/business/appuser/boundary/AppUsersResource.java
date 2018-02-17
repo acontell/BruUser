@@ -4,7 +4,7 @@ import com.bruuser.business.appuser.entity.AppUser;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -32,7 +32,7 @@ public class AppUsersResource {
     }
 
     @PUT
-    public AppUser save(@NotNull AppUser user) {
+    public AppUser save(@Valid AppUser user) {
         return appUsersManager.save(user);
     }
 }
