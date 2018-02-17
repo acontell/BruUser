@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -32,6 +33,7 @@ public class AppUsersResource {
     }
 
     @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
     public AppUser save(@Valid AppUser user) {
         return appUsersManager.save(user);
     }

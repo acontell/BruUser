@@ -9,12 +9,12 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 @Documented
-@Constraint(validatedBy = OnlyLettersAndSpacesCheckConstraintValidator.class)
-@Target({ElementType.FIELD})
+@Constraint(validatedBy = CrossCheckConstraintValidator.class)
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface OnlyLettersAndSpacesCheck {
+public @interface CrossCheck {
 
-    String message() default "Only letters and spaces are allowed.";
+    String message() default "Cross check validation has failed.";
 
     Class<?>[] groups() default {};
 

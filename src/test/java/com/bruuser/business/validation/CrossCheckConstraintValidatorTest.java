@@ -5,13 +5,13 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 
-public class OnlyLettersAndSpacesCheckConstraintValidatorTest {
+public class CrossCheckConstraintValidatorTest {
 
-    private OnlyLettersAndSpacesCheckConstraintValidator cut;
+    private CrossCheckConstraintValidator cut;
 
     @Before
     public void setUp() {
-        cut = new OnlyLettersAndSpacesCheckConstraintValidator();
+        cut = new CrossCheckConstraintValidator();
     }
 
     @Test
