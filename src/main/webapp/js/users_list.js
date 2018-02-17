@@ -15,14 +15,16 @@
             return acc + templateFnc(parseUser(user));
         }, '');
     }
-    
+
     function parseUser(user) {
         var lastUpdate = user.lastUpdate;
         user.lastUpdate = new Date(lastUpdate).toISOString();
         return user;
     }
 
-    USERS_LIST.update = function (ev, users) {
+    USERS_LIST.fetchUsers = _.partial(AJAX.loadListOfUsers, _.partial(EVENTS.trigger, 'successFetchUsers'));
+
+    USERS_LIST.paint = function (ev, users) {
         $el = $el || init();
         templateFnc = templateFnc || _.template($('#userRowTemplate').html());
         fillResultData(users);
