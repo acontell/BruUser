@@ -19,9 +19,9 @@
         <td>{{ password }}</td>
         <td>{{ lastUpdate }}</td>
         <td>
-            <a class="edit" data-userName="{{ userName }}" href="#"><span class="glyphicon glyphicon-pencil"></span></a>
+            <a class="edit" data-username="{{ userName }}" href="#"><span class="glyphicon glyphicon-pencil"></span></a>
             &nbsp; 
-            <a class="remove" data-userName="{{ userName }}" href="#"><span class="glyphicon glyphicon-remove"></span></a>
+            <a class="remove" data-username="{{ userName }}" href="#"><span class="glyphicon glyphicon-remove"></span></a>
         </td>
     </tr>
 </script>

@@ -7,4 +7,6 @@ function initEnvironment() {
 
 $(document)
         .on('ready', {}, _.flowRight(USERS_LIST.fetchUsers, initEnvironment))
-        .on('successFetchUsers', {}, USERS_LIST.paint);
+        .on('successFetchUsers', {}, USERS_LIST.paint)
+        .on('successRemoveUser', {}, USERS_LIST.fetchUsers)
+        .on('updateUserRequest', {}, console.log);

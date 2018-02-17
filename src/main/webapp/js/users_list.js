@@ -1,5 +1,5 @@
 (function (USERS_LIST, $, _, undefined) {
-    var $el, templateFnc;
+    var $el, currentUsers, templateFnc;
 
     function init() {
         $el = $('#mainTable');
@@ -7,7 +7,22 @@
     }
 
     function fillResultData(users) {
+        modifyEvents('off');
         $el.html(buildTableBody(users));
+        modifyEvents('on');
+    }
+
+    function modifyEvents(action) {
+        $el.find('.edit')[action]('click', editHandler);
+        $el.find('.remove')[action]('click', removeHandler);
+    }
+
+    function editHandler() {
+        EVENTS.trigger('updateUserRequest', findUserByUserName($(this).data('username')));
+    }
+
+    function removeHandler() {
+        AJAX.removeUser($(this).data('username'), EVENTS.triggerCurried('successRemoveUser'));
     }
 
     function buildTableBody(users) {
@@ -22,11 +37,20 @@
         return user;
     }
 
-    USERS_LIST.fetchUsers = _.partial(AJAX.loadListOfUsers, _.partial(EVENTS.trigger, 'successFetchUsers'));
+    function findUserByUserName(userName) {
+        return _.find(currentUsers, function (user) {
+            return user.userName === userName;
+        });
+    }
+
+    USERS_LIST.fetchUsers = function () {
+        AJAX.loadListOfUsers(EVENTS.triggerCurried('successFetchUsers'));
+    };
 
     USERS_LIST.paint = function (ev, users) {
         $el = $el || init();
         templateFnc = templateFnc || _.template($('#userRowTemplate').html());
+        currentUsers = users;
         fillResultData(users);
     };
 
