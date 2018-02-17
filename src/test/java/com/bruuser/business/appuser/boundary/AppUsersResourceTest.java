@@ -17,8 +17,10 @@ import org.mockito.MockitoAnnotations;
 public class AppUsersResourceTest {
 
     private static final String APP_USER_NAME = "acontell";
-    private static final AppUser USER = new AppUser(APP_USER_NAME);
-    private static final List<AppUser> APP_USERS = Arrays.asList(USER);
+    private static final String NEW_APP_USER_NAME = "acontell2";
+    private static final AppUser OLD_USER = new AppUser(APP_USER_NAME);
+    private static final AppUser NEW_USER = new AppUser(NEW_APP_USER_NAME);
+    private static final List<AppUser> APP_USERS = Arrays.asList(OLD_USER);
     private AppUsersResource cut;
 
     @Mock
@@ -29,7 +31,10 @@ public class AppUsersResourceTest {
         MockitoAnnotations.initMocks(this);
         cut = new AppUsersResource();
         cut.appUsersManager = appUserManager;
-        when(appUserManager.save(USER)).thenReturn(USER);
+        when(appUserManager.update(OLD_USER, OLD_USER)).thenReturn(OLD_USER);
+        when(appUserManager.merge(NEW_USER)).thenReturn(NEW_USER);
+        when(appUserManager.getByUserName(APP_USER_NAME)).thenReturn(OLD_USER);
+        when(appUserManager.getByUserName(NEW_APP_USER_NAME)).thenReturn(null);
         when(appUserManager.getAll()).thenReturn(APP_USERS);
     }
 
@@ -37,18 +42,36 @@ public class AppUsersResourceTest {
     public void getAppUserResourceShouldReturnNewAppUserResource() {
         assertThat(cut.getAppUserResource(APP_USER_NAME), instanceOf(AppUserResource.class));
     }
-
+    
     @Test
-    public void saveShouldCallAppUserManagerSave() {
-        cut.save(USER);
-        verify(appUserManager).save(USER);
+    public void saveShouldCallGetByUserName() {
+        cut.save(OLD_USER);
+        verify(appUserManager).getByUserName(APP_USER_NAME);
     }
 
     @Test
-    public void saveShouldReturnAppUserManagerSave() {
-        assertEquals(cut.save(USER), USER);
+    public void saveShouldCallAppUserManagerMergeOnCreation() {
+        cut.save(NEW_USER);
+        verify(appUserManager).merge(NEW_USER);
     }
 
+    @Test
+    public void saveShouldReturnAppUserManagerMergeOnCreation() {
+        cut.save(NEW_USER);
+        assertEquals(appUserManager.merge(NEW_USER), NEW_USER);
+    }
+    
+    @Test
+    public void saveShouldCallUpdateWhenIsNotCreation() {
+        cut.save(OLD_USER);
+        verify(appUserManager).update(OLD_USER, OLD_USER);
+    }
+
+    @Test
+    public void saveShouldReturnUpdateWhenIsNotCreation() {
+        assertEquals(appUserManager.update(OLD_USER, OLD_USER), OLD_USER);
+    }
+    
     @Test
     public void getAllShouldCallAppUserManagerGetAll() {
         cut.getAll();

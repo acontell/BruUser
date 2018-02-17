@@ -4,7 +4,6 @@ import com.bruuser.business.appuser.entity.AppUser;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -33,7 +32,14 @@ public class AppUsersResource {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public AppUser save(@Valid AppUser user) {
-        return appUsersManager.save(user);
+    public AppUser save(AppUser newUser) {
+        AppUser storedUser = appUsersManager.getByUserName(newUser.getUserName());
+        return isCreationOperation(storedUser) 
+                ? appUsersManager.merge(newUser)
+                : appUsersManager.update(storedUser, newUser);
+    }
+
+    private boolean isCreationOperation(AppUser storedUser) {
+        return storedUser == null;
     }
 }
