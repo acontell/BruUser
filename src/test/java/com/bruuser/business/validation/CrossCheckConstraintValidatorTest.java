@@ -16,6 +16,11 @@ public class CrossCheckConstraintValidatorTest {
     }
 
     @Test
+    public void initializeDoesNothing() {
+        cut.initialize(null);
+    }
+    
+    @Test
     public void isValidShouldReturnFalse() {
         assertFalse(cut.isValid(new AppUser(), null));
     }

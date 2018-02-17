@@ -1,5 +1,6 @@
 package com.bruuser.business.appuser.entity;
 
+import com.bruuser.business.adapters.HalfDuplexXmlAdapter;
 import com.bruuser.business.security.PasswordHash;
 import static com.bruuser.business.validation.StringValidation.isNotEmptyAlphaNumericOnly;
 import static com.bruuser.business.validation.StringValidation.isNotEmptyAtLeastOneDigitAndUpperCase;
@@ -16,13 +17,15 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import com.bruuser.business.validation.CrossCheck;
+import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @Entity
 @NamedQuery(name = AppUser.FIND_ALL, query = "SELECT t FROM AppUser t")
@@ -35,9 +38,6 @@ public class AppUser implements ValidEntity, Serializable {
     private static final String PREFIX = "appuser.entity.AppUser.";
     public static final String FIND_ALL = PREFIX + "findAll";
 
-    @Version
-    private long version;
-
     @NotNull
     @Size(min = 1, max = 200)
     @Column(name = "FULL_NAME")
@@ -49,22 +49,27 @@ public class AppUser implements ValidEntity, Serializable {
     @Column(name = "USER_NAME")
     private String userName;
 
-    @NotNull
     @Size(min = 8)
     @Column(name = "PASSWORD")
+    @XmlJavaTypeAdapter(HalfDuplexXmlAdapter.class)
     private String password;
 
     @Column(name = "LAST_UPDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
 
+    @Transient
+    @XmlTransient
+    private boolean hasPasswordBeenEncrypted;
+
     @PreUpdate
     @PrePersist
     public void updateCalculatedFields() {
-        // Even though new dates could come from Frontend, they will be overridden (therefore they're not editable).
-        // Password is always updated to simplify things.
-        lastUpdate = new Date();
-        this.password = PasswordHash.createHash(this.password);
+        this.lastUpdate = new Date();
+        if (!this.hasPasswordBeenEncrypted) {
+            this.password = PasswordHash.createHash(this.password);
+            setHasPasswordBeenEncrypted(true);
+        }
     }
 
     public AppUser() {
@@ -92,10 +97,26 @@ public class AppUser implements ValidEntity, Serializable {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isHasPasswordBeenEncrypted() {
+        return hasPasswordBeenEncrypted;
+    }
+
+    public void setHasPasswordBeenEncrypted(boolean hasPasswordBeenEncrypted) {
+        this.hasPasswordBeenEncrypted = hasPasswordBeenEncrypted;
+    }
+
     @Override
     public boolean isValid() {
         return isNotEmptyAlphaNumericOnly(userName)
                 && isNotEmptyCharsAndSpacesOnly(fullName)
-                && isNotEmptyAtLeastOneDigitAndUpperCase(password);
+                && checkPassword();
+    }
+
+    private boolean checkPassword() {
+        return this.hasPasswordBeenEncrypted || isNotEmptyAtLeastOneDigitAndUpperCase(password);
     }
 }
