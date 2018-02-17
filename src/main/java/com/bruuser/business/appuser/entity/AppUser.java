@@ -1,5 +1,6 @@
 package com.bruuser.business.appuser.entity;
 
+import com.bruuser.business.converters.CryptoConverter;
 import static com.bruuser.business.validation.StringValidation.isNotEmptyAlphaNumericOnly;
 import static com.bruuser.business.validation.StringValidation.isNotEmptyAtLeastOneDigitAndUpperCase;
 import static com.bruuser.business.validation.StringValidation.isNotEmptyCharsAndSpacesOnly;
@@ -22,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import com.bruuser.business.validation.CrossCheck;
+import javax.persistence.Convert;
 
 @Entity
 @NamedQuery(name = AppUser.FIND_ALL, query = "SELECT t FROM AppUser t")
@@ -50,6 +52,7 @@ public class AppUser implements ValidEntity, Serializable {
 
     @NotNull
     @Size(min = 8)
+    @Convert(converter = CryptoConverter.class)
     @Column(name = "PASSWORD")
     private String password;
 
@@ -60,7 +63,7 @@ public class AppUser implements ValidEntity, Serializable {
     @PreUpdate
     @PrePersist
     public void updateTimeStamps() {
-        // Even though new dates come from OF, they will be overridden (therefore they're not editable).
+        // Even though new dates could come from Frontend, they will be overridden (therefore they're not editable).
         lastUpdate = new Date();
     }
 
