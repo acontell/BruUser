@@ -1,10 +1,15 @@
 package com.bruuser.business.appuser.boundary;
 
 import com.bruuser.business.appuser.entity.AppUser;
+import java.util.Arrays;
+import java.util.HashSet;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.TypedQuery;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -16,44 +21,82 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class AppUsersManagerTest {
 
     private static final String APP_USER_NAME = "acontell";
-    private static final AppUser USER = new AppUser();
+    private static final String NEW_PASSWORD = "F";
+    private static final AppUser OLD_USER = new AppUser();
+    private static final AppUser NEW_USER = new AppUser();
     private AppUsersManager cut;
     @Mock
     private EntityManager em;
     @Mock
     private TypedQuery<AppUser> typedQuery;
+    @Mock
+    private Validator validator;
 
     @Before
     public void setUp() {
         initMocks(this);
         cut = new AppUsersManager();
         cut.em = em;
-        when(em.find(AppUser.class, APP_USER_NAME)).thenReturn(USER);
-        when(em.merge(USER)).thenReturn(USER);
-        when(em.getReference(AppUser.class, APP_USER_NAME)).thenReturn(USER);
+        cut.validator = validator;
+        when(validator.validate(OLD_USER)).thenReturn(new HashSet<>());
+        when(em.find(AppUser.class, APP_USER_NAME)).thenReturn(OLD_USER);
+        when(em.merge(OLD_USER)).thenReturn(OLD_USER);
+        when(em.merge(NEW_USER)).thenReturn(NEW_USER);
+        when(em.getReference(AppUser.class, APP_USER_NAME)).thenReturn(OLD_USER);
         when(em.createNamedQuery(AppUser.FIND_ALL, AppUser.class)).thenReturn(typedQuery);
     }
 
     @Test
-    public void getByIdShouldCallEntityManagerFind() {
+    public void getByUserNameShouldCallEntityManagerFind() {
         cut.getByUserName(APP_USER_NAME);
         verify(em).find(AppUser.class, APP_USER_NAME);
     }
 
     @Test
-    public void getByIdShouldReturnEntityManagerFind() {
-        assertEquals(cut.getByUserName(APP_USER_NAME), USER);
+    public void getByUserNameShouldReturnEntityManagerFind() {
+        assertEquals(cut.getByUserName(APP_USER_NAME), OLD_USER);
     }
 
     @Test
-    public void saveShouldCallEntityManagerSave() {
-        cut.save(USER);
-        verify(em).merge(USER);
+    public void updateShouldCallEntityManagerMerge() {
+        cut.update(OLD_USER, NEW_USER);
+        verify(em).merge(NEW_USER);
     }
 
     @Test
-    public void saveShouldReturnEntityManagerSave() {
-        assertEquals(cut.save(USER), USER);
+    public void updateShouldReturnEntityManagerMerge() {
+        assertEquals(cut.update(OLD_USER, NEW_USER), NEW_USER);
+    }
+
+    @Test
+    public void updateShouldUpdateOldEntityProperties() {
+        final AppUser newUser = new AppUser("a", "b", null);
+        cut.update(new AppUser("d", "e", NEW_PASSWORD), newUser);
+        assertTrue(newUser.isHasPasswordBeenEncrypted());
+        assertEquals(newUser.getPassword(), NEW_PASSWORD);
+    }
+
+    @Test(expected = ConstraintViolationException.class)
+    public void updateShouldThrowConstraintExceptionWhenValidatorComplains() {
+        when(validator.validate(NEW_USER)).thenReturn(new HashSet<>(Arrays.asList(null, null)));
+        cut.update(OLD_USER, NEW_USER);
+    }
+
+    @Test
+    public void mergeShouldCallEntityManagerMerge() {
+        cut.merge(NEW_USER);
+        verify(em).merge(NEW_USER);
+    }
+
+    @Test
+    public void mergeShouldReturnEntityManagerMerge() {
+        assertEquals(cut.merge(NEW_USER), NEW_USER);
+    }
+
+    @Test(expected = ConstraintViolationException.class)
+    public void mergeShouldThrowConstraintExceptionWhenValidatorComplains() {
+        when(validator.validate(NEW_USER)).thenReturn(new HashSet<>(Arrays.asList(null, null)));
+        cut.merge(NEW_USER);
     }
 
     @Test
@@ -65,12 +108,12 @@ public class AppUsersManagerTest {
     @Test
     public void deleteShouldCallEntityManagerDelete() {
         cut.delete(APP_USER_NAME);
-        verify(em).remove(USER);
+        verify(em).remove(OLD_USER);
     }
 
     @Test
     public void deleteShouldSwallowEntityNotFoundException() {
-        doThrow(new EntityNotFoundException()).when(em).remove(USER);
+        doThrow(new EntityNotFoundException()).when(em).remove(OLD_USER);
         cut.delete(APP_USER_NAME);
     }
 
