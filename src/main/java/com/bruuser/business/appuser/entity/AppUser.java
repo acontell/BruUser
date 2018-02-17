@@ -1,6 +1,6 @@
 package com.bruuser.business.appuser.entity;
 
-import com.bruuser.business.converters.CryptoConverter;
+import com.bruuser.business.security.PasswordHash;
 import static com.bruuser.business.validation.StringValidation.isNotEmptyAlphaNumericOnly;
 import static com.bruuser.business.validation.StringValidation.isNotEmptyAtLeastOneDigitAndUpperCase;
 import static com.bruuser.business.validation.StringValidation.isNotEmptyCharsAndSpacesOnly;
@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import com.bruuser.business.validation.CrossCheck;
-import javax.persistence.Convert;
 
 @Entity
 @NamedQuery(name = AppUser.FIND_ALL, query = "SELECT t FROM AppUser t")
@@ -52,7 +51,6 @@ public class AppUser implements ValidEntity, Serializable {
 
     @NotNull
     @Size(min = 8)
-    @Convert(converter = CryptoConverter.class)
     @Column(name = "PASSWORD")
     private String password;
 
@@ -62,9 +60,11 @@ public class AppUser implements ValidEntity, Serializable {
 
     @PreUpdate
     @PrePersist
-    public void updateTimeStamps() {
+    public void updateCalculatedFields() {
         // Even though new dates could come from Frontend, they will be overridden (therefore they're not editable).
+        // Password is always updated to simplify things.
         lastUpdate = new Date();
+        this.password = PasswordHash.createHash(this.password);
     }
 
     public AppUser() {
@@ -82,6 +82,14 @@ public class AppUser implements ValidEntity, Serializable {
 
     public String getUserName() {
         return userName;
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @Override

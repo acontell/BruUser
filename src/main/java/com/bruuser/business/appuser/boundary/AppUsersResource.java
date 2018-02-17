@@ -27,7 +27,6 @@ public class AppUsersResource {
     }
 
     @GET
-    @Path("{all}")
     public List<AppUser> getAll() {
         return appUsersManager.getAll();
     }

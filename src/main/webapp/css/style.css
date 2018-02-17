@@ -1,0 +1,15 @@
+body {
+    padding-left: 10px;
+}
+
+.alert-info-medium {
+    width: 550px;
+}
+
+.small-padding-left {
+    padding-left: 50px;
+}
+
+.quarter-width {
+    width: 25%;
+}
