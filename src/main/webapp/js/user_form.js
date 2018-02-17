@@ -2,7 +2,6 @@
     var $el;
 
     function showNotifications(isErrorVisible, isSuccessVisible) {
-        console.log('aqui me tienes', isErrorVisible, isSuccessVisible);
         $('#errors').toggle(isErrorVisible);
         $('#success').toggle(isSuccessVisible);
     }
@@ -11,7 +10,7 @@
         return JSON.stringify({
             userName: $('#userName').val(),
             fullName: $('#fullName').val(),
-            password: $('#password').val()
+            password: $('#password').val() || null
         });
     }
 

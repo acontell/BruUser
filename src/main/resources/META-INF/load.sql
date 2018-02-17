@@ -1,2 +1,0 @@
-INSERT INTO APPUSER("USER_NAME", "FULL_NAME", "PASSWORD", "LAST_UPDATE", "VERSION") VALUES ('acontell', 'arca', 'arcadio', {ts '2017-09-01 18:47:52'}, 1)
-INSERT INTO APPUSER("USER_NAME", "FULL_NAME", "PASSWORD", "LAST_UPDATE", "VERSION") VALUES ('acontell2', 'arca2', 'arcadio', {ts '2017-09-01 18:47:00'}, 1)

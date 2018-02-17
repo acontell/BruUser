@@ -4,7 +4,6 @@
             <tr>
                 <th>User name</th>
                 <th>Full name</th>
-                <th>Password</th>
                 <th>LastUpdate</th>
                 <th>Actions</th>
             </tr>
@@ -16,7 +15,6 @@
     <tr>
         <td>{{ userName }}</td>
         <td>{{ fullName }}</td>
-        <td>{{ password }}</td>
         <td>{{ lastUpdate }}</td>
         <td>
             <a class="edit" data-username="{{ userName }}" href="#"><span class="glyphicon glyphicon-pencil"></span></a>

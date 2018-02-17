@@ -10,7 +10,7 @@
         </div>
         <div class="form-group">
             <label for="password">Password:</label>
-            <input type="text" class="form-control" id="password">
+            <input type="text" class="form-control" placeholder="Leave it blank if you don't want to override password" id="password">
         </div>
         <div class="form-group">
             <label for="lastUpdate">Last update:</label>
