@@ -11,13 +11,13 @@
     "test": "npm run frontendTests"
   },
   "dependencies": {
-    "phantomjs-prebuilt": "*"
+    "phantomjs-prebuilt": "^2.1.7"
   },
   "devDependencies": {
-    "jscs": "^3.0.6", 
-    "jshint": "^2.9.2", 
-    "cucumber": "^1.2.1", 
-    "selenium-webdriver": "^2.53.3", 
+    "jscs": "^3.0.6",
+    "jshint": "^2.9.2",
+    "cucumber": "^1.2.1",
+    "selenium-webdriver": "^2.53.3",
     "lodash": "^4.13.1"
   }
 }

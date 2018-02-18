@@ -7,7 +7,6 @@ var root = process.cwd(),
     hooks = function () {
         // Get the home page before running any scenario
         this.Before(function (scenario, callback) {
-            this.driver.manage().timeouts().pageLoadTimeout(20000);
             this.driver
                 .get(serverCfg.url + ':' + serverCfg.port + '/' + serverCfg.app)
                 .then(_.constant(null))
