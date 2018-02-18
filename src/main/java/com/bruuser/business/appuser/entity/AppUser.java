@@ -62,7 +62,7 @@ public class AppUser implements ValidEntity, Serializable {
     @Transient
     @XmlTransient
     private boolean hasPasswordBeenEncrypted;
-
+    
     public AppUser() {
     }
 
