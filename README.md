@@ -58,15 +58,15 @@ Se ha añadido un EJBExceptionMapper para mappear ConstraintViolationException y
 
 # Campos del usuario
 
-El tema de los contraints sobre los campos de usuario se ha hecho a través de anotaciones de javax (en la medida de lo posible). La validación de los campos password, username y fullname se ha hecho a través de una ValidationConstraint.
+El tema de los contraints sobre los campos de usuario se ha hecho a través de anotaciones de javax (en la medida de lo posible). La validación de los campos password, username y fullname se ha hecho a través de un ConstraintValidator (CrossCheckConstraintValidator).
 
 # Last update
 
-Este campo se calcula en el Backend y se sobreescribe en la entidad antes de ser persistida en la base de datos utilizando las anotaciones @PreUpdate y @PrePersist.
+Este campo se calcula y se sobreescribe en la entidad antes de ser persistida en la base de datos mediante un método anotado con @PreUpdate y @PrePersist.
 
 # Password
 
-Antes de ser persistido (@PreUpdate y @PrePersist) en la base de datos, al password recibido desde el frontal se le añade una cadena generada (salt) y se encripta, pasando a persistirlo a continuación. Obviamente, este hash no pasa las constraints del password, con lo que una nueva variable booleana ha tenido que ser creada en la entidad para poder controlar este hecho. Tanto el password como esta nueva variable han sido marcados como @XmlTransient y no se mandan al frontal.
+Antes de ser persistido en la base de datos, al password recibido desde el frontal se le añade una cadena generada (salt) y se encripta, pasando a persistirlo a continuación. Obviamente, este hash no pasa las constraints del password, con lo que una nueva variable booleana ha tenido que ser creada en la entidad para poder controlar este hecho. Tanto el password como esta nueva variable han sido marcados como @XmlTransient y no se mandan al frontal.
 
 El hecho de que el password se pueda mandar desde el frontal para ser modificado pero no se quiera enviar al frontal (por motivos de seguridad), ha hecho necesario crear un nuevo adapter que de solución a esta casuística (HalfDuplexXmlAdapter). Este adapter permite recibir datos pero a la hora de mandarlos, envía cadena vacía.
 
@@ -74,19 +74,21 @@ Hay que decir que quizás hubiese podido ser interesante haber desarrollado la a
 
 # Servicio REST
 
-AppUsersResource.java (JAX-RS) gestiona las peticiones y delega la lógica a AppUsersManager. De esta manera seguimos SLP (single responsability principle) y aumentamos la cohesión de las clases. También conseguimos evitar que AppUsersManager quede acoplado a JAX-RS y pueda emplearse también, por ejemplo, para gestionar JAX-WS.
+AppUsersResource.java (JAX-RS) gestiona las peticiones y delega la lógica a AppUsersManager (single responsability principle) y aumentamos la cohesión de las clases. También conseguimos evitar que AppUsersManager quede acoplado a JAX-RS y pueda emplearse también, por ejemplo, para gestionar JAX-WS.
 
-Tanto AppUsersResource como AppUsersManager han sido marcadas como @Stateless (ganamos monitoring y dejamos al servidor de aplicaciones que las gestione como quiera).
+Tanto AppUsersResource como AppUsersManager han sido marcadas como @Stateless (ganamos monitoring y dejamos al servidor de aplicaciones que las gestione como quiera ya que no tienen estado).
 
-AppUsersResource delega también todas aquellas peticiones que se refieren a un usuario en concreto a AppUserResource. Con esto aligeramos un poco más AppUsersResource y le quitamos responsabilidades también. Estas dos clases están acopladas: se crean objetos de tipo AppUserResource en AppUsersResource para gestionar estas peticiones específicas de usuario.
+AppUsersResource delega también todas aquellas peticiones que se refieren a un usuario en concreto a AppUserResource. Con esto aligeramos un poco más AppUsersResource y le quitamos responsabilidades también aunque las dos clases quedan acopladas.
 
 Decidí juntar la creación/edición de usuarios en un mismo método REST (verbo PUT). Puesto que el identificador (technical key) no está generado en el servidor y viene determinado por el usuario, creo que la elección del verbo es correcta: PUT puede utilizarse para crear/updatear recursos siempre y cuando las operaciones sean idempotentes, como es el caso aquí. Podía haber utilizado POST para la creación (mandando al usuario la URL al nuevo recurso en la respuesta) y PUT para la modificación pero decidí no hacerlo así. Esta decisión me pareció ventajosa al principio (simplifica el frontal), aunque luego, y por temas del password, llevó a incluir un poco más de lógica. Si tuviera que mantener el proyecto y viera que tenerlo junto en un sólo método empieza a ser un problema, lo refactorizaría sin dudarlo y lo transformaría en dos métodos (juntar no suele ser buena idea).
 
-En el frontal también decidí juntar estas dos operaciones: se crea usuario cuando el userName no exite en la BD y se actualiza la información cuando el userName coincide con el de algún usuario guardado. Como he comentado antes, el password no se manda al frontal. Si al editar a un usuario se deja el campo password en blanco, este no se modifica. Si lleva valor, se procede a generar un nuevo password al usuario. La creación de un usuario obliga a que el request de creación lleve este campo. Esto lo gestiono gracias a la clase Validator, que inyecto en AppUsersManager
+En el frontal también decidí juntar estas dos operaciones: se crea usuario cuando el userName no exite en la BD y se actualiza la información cuando el userName coincide con el de algún usuario guardado. Como he comentado antes, el password no se manda al frontal. Si al editar a un usuario se deja el campo password en blanco, este no se modifica. Si lleva valor, se procede a generar un nuevo password al usuario. La creación de un usuario obliga a que el request de creación lleve este campo. Al igual que sucede con la parte del backend, en caso de que las operaciones de actualización/creación de usuario ganaran complejidad, se podrían separar estas responsabilidades.
+
+La gestión de la validez de un bean se realiza a través del objeto Validator que inyecto en AppUsersManager y que valida la entidad, lanzando una excepción si alguna constraint ha sido violada. No hay validaciones en el frontal (por mantenerlo simple).
 
 # Webservice (WSDL)
 
-El webservice es lo más simple posible: un POJO anotado con @Webservice y un método anotado con @WebMethod. La lógica se delega a AppUsersManager (agnóstico en cuanto a protocolo) que comprueba si las credenciales son correctas y devuelve en consecuencia. He creado un pequeño script que permite probar el Webservice fácilmente (curlWebService). Hace uso de request.xml se expresa la petición.
+El webservice es también lo más simple posible: un POJO anotado con @Webservice y un método anotado con @WebMethod. La lógica se delega a AppUsersManager (agnóstico en cuanto a protocolo) que comprueba si las credenciales son correctas y devuelve en consecuencia. He creado un pequeño script que permite probar el Webservice fácilmente (curlWebService). Hace uso de request.xml donde se expresa la petición.
 
 # Control de versiones
 
