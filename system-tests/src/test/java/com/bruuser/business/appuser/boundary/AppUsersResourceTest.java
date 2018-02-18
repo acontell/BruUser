@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class AppUsersResource {
+public class AppUsersResourceTest {
     private static final String URI = "http://localhost:8080/bruuser/resources/appuser";
     @Rule
     public JAXRSClientProvider provider = JAXRSClientProvider.buildWithURI(URI);
