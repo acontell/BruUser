@@ -24,6 +24,12 @@ var _ = require(process.cwd() + '/util/functional'),
                         .clickSendButton()
                         .then(callback);
             });
+
+            this.Then('the table of user has to have one row', function (callback) {
+                this.page
+                        .testUserTableLengthEq(1)
+                        .then(callback);
+            });
         };
 
 module.exports = steps;

@@ -3,5 +3,6 @@ Feature: As a user of bruuser
 
   Scenario: Getting to home page
     Given the user has reached home page
-    When the user fills user form
+    And the user fills user form
     When the user clicks send button in user form
+    Then the table of user has to have one row
