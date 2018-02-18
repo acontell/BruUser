@@ -8,6 +8,7 @@ import org.junit.Test;
 public class HalfDuplexXmlAdapterTest {
 
     private static final String TEST_VALUE = "asdf";
+    
     private HalfDuplexXmlAdapter cut;
 
     @Before

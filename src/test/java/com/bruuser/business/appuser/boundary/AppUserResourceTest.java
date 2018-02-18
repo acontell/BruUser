@@ -7,20 +7,22 @@ import org.junit.Test;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AppUserResourceTest {
 
     private static final String APP_USER_NAME = "acontell";
     private static final AppUser USER = new AppUser(APP_USER_NAME);
-    private AppUserResource cut;
 
+    private AppUserResource cut;
+    
     @Mock
     private AppUsersManager appUserManager;
 
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        initMocks(this);
         cut = new AppUserResource(appUserManager, APP_USER_NAME);
         when(appUserManager.getByUserName(APP_USER_NAME)).thenReturn(USER);
     }
@@ -32,7 +34,7 @@ public class AppUserResourceTest {
     }
 
     @Test
-    public void getByUserNameShouldCallReturnAppUserManagerGetByIdResult() {
+    public void getByUserNameShouldCallReturnAppUserManagerGetByUserNameResult() {
         assertEquals(cut.getByUserName(), USER);
     }
 

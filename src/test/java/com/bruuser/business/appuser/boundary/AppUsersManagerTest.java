@@ -4,9 +4,11 @@ import com.bruuser.business.appuser.entity.AppUser;
 import com.bruuser.business.security.PasswordHash;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.TypedQuery;
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import static org.junit.Assert.assertEquals;
@@ -27,7 +29,10 @@ public class AppUsersManagerTest {
     private static final String NEW_PASSWORD = "F";
     private static final AppUser OLD_USER = new AppUser();
     private static final AppUser NEW_USER = new AppUser();
+    private static final Set<ConstraintViolation<AppUser>> VIOLATED_CONSTRAINTS = new HashSet<>(Arrays.asList(null, null));
+    
     private AppUsersManager cut;
+    
     @Mock
     private EntityManager em;
     @Mock
@@ -81,7 +86,7 @@ public class AppUsersManagerTest {
 
     @Test(expected = ConstraintViolationException.class)
     public void updateShouldThrowConstraintExceptionWhenValidatorComplains() {
-        when(validator.validate(NEW_USER)).thenReturn(new HashSet<>(Arrays.asList(null, null)));
+        when(validator.validate(NEW_USER)).thenReturn(VIOLATED_CONSTRAINTS);
         cut.update(OLD_USER, NEW_USER);
     }
 
@@ -98,7 +103,7 @@ public class AppUsersManagerTest {
 
     @Test(expected = ConstraintViolationException.class)
     public void mergeShouldThrowConstraintExceptionWhenValidatorComplains() {
-        when(validator.validate(NEW_USER)).thenReturn(new HashSet<>(Arrays.asList(null, null)));
+        when(validator.validate(NEW_USER)).thenReturn(VIOLATED_CONSTRAINTS);
         cut.merge(NEW_USER);
     }
 
