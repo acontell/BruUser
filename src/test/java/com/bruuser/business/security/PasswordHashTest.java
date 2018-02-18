@@ -6,18 +6,17 @@ import org.junit.Test;
 
 public class PasswordHashTest {
 
-    // This test comes from the creator of PasswordHash, I've just cleaned up a bit.
+    private static final String PASSWORD = "asdf4fd3DD";
+    private static final String OTHER_PASSWORD = "asdf4fd3DDFF55";
+    
+    // This test comes from the creator of PasswordHash, I've just cleaned it up a bit.
     // https://gist.github.com/jtan189/3804290
     @Test
-    public void testCreateHash() throws Exception {
-        for (int i = 0; i < 100; i++) {
-            String password = "" + i;
-            String hash = PasswordHash.createHash(password);
-            String secondHash = PasswordHash.createHash(password);
-            assertFalse(hash.equals(secondHash));
-            String wrongPassword = "" + (i + 1);
-            assertFalse(PasswordHash.validatePassword(wrongPassword, hash));
-            assertTrue(PasswordHash.validatePassword(password, hash));
-        }
+    public void testCreateHashAndValidate() throws Exception {
+        String hash = PasswordHash.createHash(PASSWORD);
+        String secondHash = PasswordHash.createHash(PASSWORD);
+        assertFalse(hash.equals(secondHash));
+        assertFalse(PasswordHash.validatePassword(OTHER_PASSWORD, hash));
+        assertTrue(PasswordHash.validatePassword(PASSWORD, hash));
     }
 }

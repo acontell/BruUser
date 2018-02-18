@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AppUsersResourceTest {
 
@@ -21,6 +21,7 @@ public class AppUsersResourceTest {
     private static final AppUser OLD_USER = new AppUser(APP_USER_NAME);
     private static final AppUser NEW_USER = new AppUser(NEW_APP_USER_NAME);
     private static final List<AppUser> APP_USERS = Arrays.asList(OLD_USER);
+    
     private AppUsersResource cut;
 
     @Mock
@@ -28,7 +29,7 @@ public class AppUsersResourceTest {
 
     @Before
     public void setUp() throws URISyntaxException {
-        MockitoAnnotations.initMocks(this);
+        initMocks(this);
         cut = new AppUsersResource();
         cut.appUsersManager = appUserManager;
         when(appUserManager.update(OLD_USER, OLD_USER)).thenReturn(OLD_USER);

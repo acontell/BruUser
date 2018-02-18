@@ -18,7 +18,9 @@ public class UsersServiceTest {
     private static final String USER_NAME = "acontell";
     private static final String PASSWORD = "password";
     private static final List<AppUser> GET_ALL_RESULT = Collections.singletonList(new AppUser());
+    
     private UsersService cut;
+    
     @Mock
     private AppUsersManager appUsersManager;
 
