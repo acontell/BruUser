@@ -49,6 +49,7 @@ public class AppUser implements ValidEntity, Serializable {
     @Column(name = "USER_NAME")
     private String userName;
 
+    @NotNull
     @Size(min = 8)
     @Column(name = "PASSWORD")
     @XmlJavaTypeAdapter(HalfDuplexXmlAdapter.class)
@@ -62,16 +63,6 @@ public class AppUser implements ValidEntity, Serializable {
     @XmlTransient
     private boolean hasPasswordBeenEncrypted;
 
-    @PreUpdate
-    @PrePersist
-    public void updateCalculatedFields() {
-        this.lastUpdate = new Date();
-        if (!this.hasPasswordBeenEncrypted) {
-            this.password = PasswordHash.createHash(this.password);
-            setHasPasswordBeenEncrypted(true);
-        }
-    }
-
     public AppUser() {
     }
 
@@ -83,6 +74,20 @@ public class AppUser implements ValidEntity, Serializable {
         this.userName = userName;
         this.fullName = fullName;
         this.password = password;
+    }
+    
+    @PreUpdate
+    @PrePersist
+    public void updateCalculatedFields() {
+        this.lastUpdate = new Date();
+        updatePassword();
+    }
+
+    private void updatePassword() {
+        if (!isHasPasswordBeenEncrypted()) {
+            setPassword(PasswordHash.createHash(getPassword()));
+            setHasPasswordBeenEncrypted(true);
+        }
     }
 
     public String getUserName() {
@@ -117,6 +122,6 @@ public class AppUser implements ValidEntity, Serializable {
     }
 
     private boolean checkPassword() {
-        return this.hasPasswordBeenEncrypted || isNotEmptyAtLeastOneDigitAndUpperCase(password);
+        return isHasPasswordBeenEncrypted() || isNotEmptyAtLeastOneDigitAndUpperCase(password);
     }
 }

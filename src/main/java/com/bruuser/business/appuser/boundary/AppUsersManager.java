@@ -1,7 +1,9 @@
 package com.bruuser.business.appuser.boundary;
 
 import com.bruuser.business.appuser.entity.AppUser;
+import com.bruuser.business.security.PasswordHash;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -34,11 +36,19 @@ public class AppUsersManager {
     }
 
     private AppUser updatePasswordField(AppUser stored, AppUser newUser) {
-        if (newUser.getPassword() == null) {
-            newUser.setPassword(stored.getPassword());
-            newUser.setHasPasswordBeenEncrypted(true);
+        if (!isPasswordModificationRequest(newUser)) {
+            updateNewUserWithOldSaltedPassword(stored, newUser);
         }
         return newUser;
+    }
+
+    private boolean isPasswordModificationRequest(AppUser newUser) {
+        return newUser.getPassword() != null;
+    }
+
+    private void updateNewUserWithOldSaltedPassword(AppUser stored, AppUser newUser) {
+        newUser.setPassword(stored.getPassword());
+        newUser.setHasPasswordBeenEncrypted(true);
     }
 
     private AppUser checkConstraints(AppUser user) {
@@ -64,5 +74,21 @@ public class AppUsersManager {
         return this.em
                 .createNamedQuery(AppUser.FIND_ALL, AppUser.class)
                 .getResultList();
+    }
+
+    public boolean isAuthenticatedUser(String userName, String password) {
+        return isValidAuthenticationRequest(userName, password)
+                && isUserStoredWithSameCredentials(userName, password);
+    }
+
+    private boolean isUserStoredWithSameCredentials(String userName, String password) {
+        return Optional.ofNullable(getByUserName(userName))
+                .map(AppUser::getPassword)
+                .map(storedPassword -> PasswordHash.validatePassword(password, storedPassword))
+                .orElse(false);
+    }
+
+    private boolean isValidAuthenticationRequest(String userName, String password) {
+        return userName != null && password != null;
     }
 }

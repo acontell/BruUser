@@ -1,6 +1,7 @@
 package com.bruuser.business.appuser.boundary;
 
 import com.bruuser.business.appuser.entity.AppUser;
+import com.bruuser.business.security.PasswordHash;
 import java.util.Arrays;
 import java.util.HashSet;
 import javax.persistence.EntityManager;
@@ -9,6 +10,7 @@ import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +23,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class AppUsersManagerTest {
 
     private static final String APP_USER_NAME = "acontell";
+    private static final String NO_STORED_USER_NAME = "acontell2";
     private static final String NEW_PASSWORD = "F";
     private static final AppUser OLD_USER = new AppUser();
     private static final AppUser NEW_USER = new AppUser();
@@ -127,5 +130,37 @@ public class AppUsersManagerTest {
     public void getAllShouldCallGetResultListOfTypedQuery() {
         cut.getAll();
         verify(typedQuery).getResultList();
+    }
+
+    @Test
+    public void isAuthenticatedUserShouldReturnFalseOnUserNameNull() {
+        assertFalse(cut.isAuthenticatedUser(null, NEW_PASSWORD));
+    }
+
+    @Test
+    public void isAuthenticatedUserShouldReturnFalseOnPasswordNull() {
+        assertFalse(cut.isAuthenticatedUser(APP_USER_NAME, null));
+    }
+
+    @Test
+    public void isAuthenticatedUserShouldReturnFalseOnUserNotFound() {
+        assertFalse(cut.isAuthenticatedUser(NO_STORED_USER_NAME, NEW_PASSWORD));
+    }
+
+    @Test
+    public void isAuthenticatedUserShouldReturnFalseOnPasswordNotCoincides() {
+        assertFalse(cut.isAuthenticatedUser(APP_USER_NAME, NEW_PASSWORD));
+    }
+
+    @Test
+    public void isAuthenticatedUserShouldReturnTrue() {
+        when(em.find(AppUser.class, APP_USER_NAME)).thenReturn(buildUserWithSaltedPassword(NEW_PASSWORD));
+        assertTrue(cut.isAuthenticatedUser(APP_USER_NAME, NEW_PASSWORD));
+    }
+    
+    private AppUser buildUserWithSaltedPassword(String password) {
+        final AppUser user = new AppUser(null, null, password);
+        user.setPassword(PasswordHash.createHash(password));
+        return user;
     }
 }
