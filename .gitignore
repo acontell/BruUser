@@ -4,3 +4,5 @@ nb-configuration.xml
 /nbproject/
 /bruuser-st/target/
 /bruuser-st/nbproject/
+/system-tests/nbproject/
+/system-tests/target/
