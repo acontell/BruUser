@@ -17,7 +17,7 @@
             <input type="text" class="form-control" id="lastUpdate" readonly>
         </div>
         <button type="reset" class="btn btn-default reset" value="Reset">Reset</button>
-        <button type="submit" class="btn btn-default">Create/update</button>
+        <button type="submit" class="btn btn-default" id="sendButton">Create/update</button>
     </form>
     <br>
     <div class="alert alert-warning alert-info-medium" id="errors">

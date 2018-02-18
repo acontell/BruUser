@@ -1,0 +1,23 @@
+{
+  "name": "bruuser",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "jscs": "node_modules/.bin/jscs .",
+    "prelint": "npm run jscs",
+    "lint": "node_modules/.bin/jshint --exclude ./node_modules .",
+    "frontendTests": "node_modules/.bin/cucumber.js --profile bruuser",
+    "pretest": "npm run lint",
+    "test": "npm run frontendTests"
+  },
+  "dependencies": {
+    "phantomjs-prebuilt": "*"
+  },
+  "devDependencies": {
+    "jscs": "^3.0.6", 
+    "jshint": "^2.9.2", 
+    "cucumber": "^1.2.1", 
+    "selenium-webdriver": "^2.53.3", 
+    "lodash": "^4.13.1"
+  }
+}

@@ -1,3 +1,4 @@
 /target/
+/functional-tests/node_modules/
 nb-configuration.xml
 /nbproject/
