@@ -1,10 +1,8 @@
 package com.bruuser.business.mappers;
 
 import static com.bruuser.business.mappers.EJBExceptionMapper.NOT_KNOWN;
-import static com.bruuser.business.mappers.EJBExceptionMapper.OPTIMISTIC_LOCKING_EXCEPTION;
 import static com.bruuser.business.mappers.EJBExceptionMapper.VIOLATION_CONSTRAINT_EXCEPTION;
 import javax.ejb.EJBException;
-import javax.persistence.OptimisticLockException;
 import javax.validation.ConstraintViolationException;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -32,15 +30,9 @@ public class EJBExceptionMapperTest {
     }
 
     @Test
-    public void toResponseShouldReturnNotKnownResponseWhenCauseIsNotOptimisticLockingOrConstraintViolationException() {
+    public void toResponseShouldReturnNotKnownResponseWhenCauseIsNotConstraintViolationException() {
         when(ex.getCause()).thenReturn(new EJBException());
         assertEquals(cut.toResponse(ex), NOT_KNOWN);
-    }
-
-    @Test
-    public void toResponseShouldReturnOptimisticResponseWhenCauseIsOptimisticLocking() {
-        when(ex.getCause()).thenReturn(new OptimisticLockException());
-        assertEquals(cut.toResponse(ex), OPTIMISTIC_LOCKING_EXCEPTION);
     }
 
     @Test
