@@ -2,3 +2,5 @@
 /functional-tests/node_modules/
 nb-configuration.xml
 /nbproject/
+/bruuser-st/target/
+/bruuser-st/nbproject/
